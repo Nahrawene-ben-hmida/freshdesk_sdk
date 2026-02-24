@@ -1,0 +1,22 @@
+PODS:
+  - Flutter (1.0.0)
+  - freshdesk_sdk (1.0.0):
+    - Flutter
+
+DEPENDENCIES:
+  - Flutter (from `Flutter`)
+  - freshdesk_sdk (from `.symlinks/plugins/freshdesk_sdk/ios`)
+
+EXTERNAL SOURCES:
+  Flutter:
+    :path: Flutter
+  freshdesk_sdk:
+    :path: ".symlinks/plugins/freshdesk_sdk/ios"
+
+SPEC CHECKSUMS:
+  Flutter: cabc95a1d2626b1b06e7179b784ebcf0c0cde467
+  freshdesk_sdk: 7fda5cb87a155f82af03addc064e264d66b3094a
+
+PODFILE CHECKSUM: 912e34f102da91123e38965ab4e5b3fb21e195f0
+
+COCOAPODS: 1.16.2

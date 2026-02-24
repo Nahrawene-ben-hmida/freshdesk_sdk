@@ -1,0 +1,66 @@
+group 'com.snapnfix.freshdesk_sdk'
+version '1.0.0'
+
+buildscript {
+    ext.kotlin_version = '1.9.0'
+    repositories {
+        google()
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath 'com.android.tools.build:gradle:8.1.0'
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+    }
+}
+
+allprojects {
+    repositories {
+        google()
+        mavenCentral()
+        maven { url 'https://jitpack.io' }
+    }
+}
+
+apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
+
+android {
+    compileSdkVersion 34
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
+
+    sourceSets {
+        main.java.srcDirs += 'src/main/kotlin'
+    }
+
+    defaultConfig {
+        minSdkVersion 26
+        targetSdkVersion 34
+    }
+
+    namespace 'com.snapnfix.freshdesk_sdk'
+}
+
+dependencies {
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    
+    // Freshdesk Mobile SDK for Android (Real SDK)
+    // Using exclusions to prevent transitive dependency conflicts
+    implementation('com.freshworks.sdk:freshdesk:1.0.2') {
+        exclude group: 'com.android.support'
+        exclude group: 'androidx.core'
+        exclude module: 'kotlin-stdlib'
+    }
+    
+    // Firebase messaging and local broadcast manager
+    implementation 'com.google.firebase:firebase-messaging:23.4.0'
+    implementation 'androidx.localbroadcastmanager:localbroadcastmanager:1.1.0'
+}

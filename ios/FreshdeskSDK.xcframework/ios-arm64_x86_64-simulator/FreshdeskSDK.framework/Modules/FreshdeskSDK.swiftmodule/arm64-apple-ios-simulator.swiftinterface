@@ -1,0 +1,126 @@
+// swift-interface-format-version: 1.0
+// swift-compiler-version: Apple Swift version 6.2.1 effective-5.10 (swiftlang-6.2.1.4.8 clang-1700.4.4.1)
+// swift-module-flags: -target arm64-apple-ios17.0-simulator -enable-objc-interop -enable-library-evolution -swift-version 5 -enforce-exclusivity=checked -O -enable-experimental-feature DebugDescriptionMacro -enable-bare-slash-regex -module-name FreshdeskSDK
+// swift-module-flags-ignorable: -no-verify-emitted-module-interface -formal-cxx-interoperability-mode=off -interface-compiler-version 6.2.1
+import Foundation
+import Swift
+import SwiftUI
+import SystemConfiguration
+import UIKit
+import UserNotifications
+import WebKit
+import _Concurrency
+import _StringProcessing
+import _SwiftConcurrencyShims
+public protocol FreshdeskJWTDelegate : AnyObject {
+  func userStateChanged(_ userState: FreshdeskSDK.UserState)
+}
+public enum UserState : Swift.String {
+  case jwtNotPresent
+  case notAuthenticated
+  case authExpired
+  case identifierUpdated
+  case authenticated
+  case undefined
+  #if compiler(>=5.3) && $NonescapableTypes
+  public init?(rawValue: Swift.String)
+  #endif
+  public typealias RawValue = Swift.String
+  public var rawValue: Swift.String {
+    get
+  }
+}
+public struct AnyCodable : Swift.Decodable {
+  public init(from decoder: any Swift.Decoder) throws
+}
+extension FreshdeskSDK.AnyCodable : Swift.Encodable {
+  public func encode(to encoder: any Swift.Encoder) throws
+}
+public let Freshdesk: FreshdeskSDK.Freshworks
+public let FD_EMPTY_STR: Swift.String
+public enum FDEvents : Swift.String, Swift.CaseIterable {
+  case userCreated, unreadCount, messageSent, messageReceived, downloadFile, userCleared
+  #if compiler(>=5.3) && $NonescapableTypes
+  public init?(rawValue: Swift.String)
+  #endif
+  public typealias AllCases = [FreshdeskSDK.FDEvents]
+  public typealias RawValue = Swift.String
+  nonisolated public static var allCases: [FreshdeskSDK.FDEvents] {
+    get
+  }
+  public var rawValue: Swift.String {
+    get
+  }
+}
+@_hasMissingDesignatedInitializers public class WidgetStateManager {
+  @objc deinit
+}
+public struct FreshdeskSDKConfig : Swift.Codable {
+  public var token: Swift.String
+  public var host: Swift.String
+  public var sdkId: Swift.String
+  public var jwtAuthToken: Swift.String?
+  public var config: FreshdeskSDK.Configuration
+  #if compiler(>=5.3) && $NonescapableTypes
+  public init(token: Swift.String, host: Swift.String, sdkId: Swift.String, jwtToken: Swift.String? = nil, locale: Swift.String? = nil, config: FreshdeskSDK.Configuration = Configuration(), shouldEnableLogs: Swift.Bool = false)
+  #endif
+  public func encode(to encoder: any Swift.Encoder) throws
+  public init(from decoder: any Swift.Decoder) throws
+}
+public struct Configuration : Swift.Codable {
+  public var content: [Swift.String : FreshdeskSDK.AnyCodable]
+  public init(content: [Swift.String : FreshdeskSDK.AnyCodable] = [:])
+  public func encode(to encoder: any Swift.Encoder) throws
+  public init(from decoder: any Swift.Decoder) throws
+}
+@_hasMissingDesignatedInitializers final public actor Freshworks {
+  public static let shared: FreshdeskSDK.Freshworks
+  @objc deinit
+  @available(iOS 13.0, tvOS 13.0, watchOS 6.0, macOS 10.15, *)
+  @_semantics("defaultActor") nonisolated final public var unownedExecutor: _Concurrency.UnownedSerialExecutor {
+    get
+  }
+}
+extension FreshdeskSDK.Freshworks {
+  nonisolated final public func initialize(with model: FreshdeskSDK.FreshdeskSDKConfig)
+  nonisolated final public func enableDebugLogs(_ isEnabled: Swift.Bool)
+  nonisolated final public func openSupport(_ viewController: UIKit.UIViewController)
+  #if compiler(>=5.3) && $NonescapableTypes
+  nonisolated final public func openTopic(_ viewController: UIKit.UIViewController, topicId: Swift.Int?, topicName: Swift.String? = nil)
+  #endif
+  nonisolated final public func openKnowledgeBase(_ viewController: UIKit.UIViewController)
+  nonisolated final public func getUnreadCount() -> Swift.Int
+  nonisolated final public func getSDKVersion() -> Swift.String
+  nonisolated final public func setCustomLinkHandler(handler: @escaping (Foundation.URL) -> ())
+  nonisolated final public func dismissFreshdeskSDKViews()
+}
+extension FreshdeskSDK.Freshworks {
+  nonisolated final public func setPushRegistrationToken(_ deviceToken: Foundation.Data)
+  nonisolated final public func isFreshdeskNotification(_ response: [Swift.AnyHashable : Any]) -> Swift.Bool
+  nonisolated final public func handleRemoteNotification(_ response: [Swift.AnyHashable : Any], appState: UIKit.UIApplication.State)
+}
+extension FreshdeskSDK.Freshworks {
+  nonisolated final public func setTicketProperties(with property: [Swift.String : Any])
+  nonisolated final public func setUserDetails(with userDetails: [Swift.String : Any])
+  #if compiler(>=5.3) && $NonescapableTypes
+  nonisolated final public func getUser(onFailure: ((any Swift.Error) -> Swift.Void)? = nil, onSuccess: @escaping ([Swift.String : Any]) -> Swift.Void)
+  #endif
+  #if compiler(>=5.3) && $NonescapableTypes
+  nonisolated final public func resetUser(onSuccess: (() -> Swift.Void)? = nil, onFailure: (() -> Swift.Void)? = nil)
+  #endif
+  #if compiler(>=5.3) && $NonescapableTypes
+  nonisolated final public func trackUserEvents(name: Swift.String, payload: [Swift.String : Swift.String]? = nil)
+  #endif
+}
+extension FreshdeskSDK.Freshworks {
+  #if compiler(>=5.3) && $NonescapableTypes
+  nonisolated final public func setJWTDelegate(_ delegate: (any FreshdeskSDK.FreshdeskJWTDelegate)?)
+  #endif
+  nonisolated final public func authenticateAndUpdate(jwt: Swift.String)
+}
+extension FreshdeskSDK.UserState : Swift.Equatable {}
+extension FreshdeskSDK.UserState : Swift.Hashable {}
+extension FreshdeskSDK.UserState : Swift.RawRepresentable {}
+extension FreshdeskSDK.FDEvents : Swift.Equatable {}
+extension FreshdeskSDK.FDEvents : Swift.Hashable {}
+extension FreshdeskSDK.FDEvents : Swift.RawRepresentable {}
