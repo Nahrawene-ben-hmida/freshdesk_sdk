@@ -39,6 +39,7 @@ android {
 
     sourceSets {
         main.java.srcDirs += 'src/main/kotlin'
+        main.kotlin.srcDirs += 'src/main/kotlin'
     }
 
     defaultConfig {
@@ -54,7 +55,7 @@ dependencies {
     
     // Freshdesk Mobile SDK for Android (Real SDK)
     // Using exclusions to prevent transitive dependency conflicts
-    implementation('com.freshworks.sdk:freshdesk:1.0.2') {
+    implementation('com.freshworks.sdk:freshdesk:2.1.0') {
         exclude group: 'com.android.support'
         exclude group: 'androidx.core'
         exclude module: 'kotlin-stdlib'
