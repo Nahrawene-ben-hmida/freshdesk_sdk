@@ -66,7 +66,7 @@ class FreshdeskSdkPlugin : FlutterPlugin, MethodCallHandler, EventChannel.Stream
 
     private fun isFreshdeskGsonException(throwable: Throwable): Boolean {
         val cause = throwable.cause ?: throwable
-        val isGsonError = cause is com.google.gson.JsonSyntaxException ||
+        val isGsonError = cause.javaClass.name.contains("JsonSyntaxException") ||
             cause.message?.contains("Expected a string but was") == true ||
             (cause.message?.contains("Expected a") == true && cause.message?.contains("but was") == true)
         if (!isGsonError) return false
@@ -335,16 +335,16 @@ class FreshdeskSdkPlugin : FlutterPlugin, MethodCallHandler, EventChannel.Stream
 
     private fun clearUserData(result: Result) {
         try {
-            // Clear user data with real SDK
-            FreshdeskSDK.resetUser(
-                onSuccess = { message ->
-                    Log.i("FreshdeskSDK", "🗑️ User data cleared: $message")
-                },
-                onFailure = { error ->
-                    Log.e("FreshdeskSDK", "❌ Failed to clear user data: $error")
-                }
-            )
-            
+            // FreshdeskSDK.resetUser() is intentionally skipped.
+            // It triggers an authenticated API call where the Freshworks server returns
+            // `meta` as a JSON array but the SDK's Gson model expects a String, causing
+            // an uncaught JsonSyntaxException on the SDK's background thread → app crash.
+            // This only affects users with a Freshdesk JWT (authenticated sessions).
+            // User isolation is preserved because the next login calls
+            // FreshdeskSDK.authenticateAndUpdate(jwt) with the new user's JWT.
+            // TODO: remove this workaround once Freshworks fixes their SDK.
+            // Sentry issue: https://expensya-ir.sentry.io/issues/7497089777/
+            Log.w("FreshdeskSDK", "⚠️ resetUser skipped — Freshworks SDK meta-array crash workaround")
             result.success(null)
         } catch (e: Exception) {
             Log.e("FreshdeskSDK", "❌ Error clearing user data: ${e.message}")
