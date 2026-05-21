@@ -32,9 +32,46 @@ class FreshdeskSdkPlugin : FlutterPlugin, MethodCallHandler, EventChannel.Stream
         context = flutterPluginBinding.applicationContext
         channel = MethodChannel(flutterPluginBinding.binaryMessenger, "freshdesk_sdk")
         channel.setMethodCallHandler(this)
-        
+
         eventChannel = EventChannel(flutterPluginBinding.binaryMessenger, "freshdesk_sdk/unread_count")
         eventChannel.setStreamHandler(this)
+
+        installFreshdeskExceptionGuard()
+    }
+
+    /**
+     * Installs a global UncaughtExceptionHandler that intercepts Gson parsing errors originating
+     * from within the Freshworks SDK's internal background threads.
+     *
+     * The Freshworks API changed the `meta` field in some responses from a String to an Array.
+     * The SDK model still expects a String, so Gson throws JsonSyntaxException on a background
+     * thread that is not caught by the SDK — crashing the app. This guard catches those exceptions
+     * and logs them instead of letting them propagate.
+     *
+     * Fix for: https://expensya-ir.sentry.io/issues/7497089777/
+     */
+    private fun installFreshdeskExceptionGuard() {
+        val existingHandler = Thread.getDefaultUncaughtExceptionHandler()
+        Thread.setDefaultUncaughtExceptionHandler { thread, throwable ->
+            if (isFreshdeskGsonException(throwable)) {
+                Log.e(
+                    "FreshdeskSDK",
+                    "⚠️ Freshdesk SDK internal Gson exception suppressed on thread '${thread.name}': ${throwable.message}",
+                )
+            } else {
+                existingHandler?.uncaughtException(thread, throwable)
+            }
+        }
+    }
+
+    private fun isFreshdeskGsonException(throwable: Throwable): Boolean {
+        val cause = throwable.cause ?: throwable
+        val isGsonError = cause is com.google.gson.JsonSyntaxException ||
+            cause.message?.contains("Expected a string but was") == true ||
+            (cause.message?.contains("Expected a") == true && cause.message?.contains("but was") == true)
+        if (!isGsonError) return false
+        val trace = throwable.stackTraceToString()
+        return trace.contains("com.freshworks") || trace.contains("freshdesk")
     }
 
     override fun onMethodCall(@NonNull call: MethodCall, @NonNull result: Result) {
