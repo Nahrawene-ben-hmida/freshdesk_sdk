@@ -142,7 +142,7 @@ class FreshdeskSdkPlugin : FlutterPlugin, MethodCallHandler, EventChannel.Stream
 
             FreshdeskSDK.initialize(context!!, sdkConfig) {
                 Log.i("FreshdeskSDK", "✅ Freshdesk SDK Initialized successfully")
-                
+
                 // If JWT is provided, authenticate the user
                 if (!jwt.isNullOrEmpty()) {
                     try {
@@ -152,13 +152,13 @@ class FreshdeskSdkPlugin : FlutterPlugin, MethodCallHandler, EventChannel.Stream
                         Log.e("FreshdeskSDK", "❌ Error authenticating user: ${e.message}")
                     }
                 }
-            }
 
-            // Register user state receiver to monitor authentication
-            registerUserStateReceiver()
-            
-            Log.i("FreshdeskSDK", "✅ Freshdesk SDK setup complete - Token: ${token.take(10)}... Host: $host")
-            result.success(true)
+                // Register user state receiver to monitor authentication
+                registerUserStateReceiver()
+
+                Log.i("FreshdeskSDK", "✅ Freshdesk SDK setup complete - Token: ${token.take(10)}... Host: $host")
+                result.success(true)
+            }
         } catch (e: Exception) {
             Log.e("FreshdeskSDK", "❌ Error initializing SDK: ${e.message}")
             result.error("INIT_ERROR", e.message, null)
